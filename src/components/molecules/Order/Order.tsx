@@ -136,21 +136,21 @@ const OrderPopup: React.FC<OrderProps> = ({
   // Handle Reject action for Stage 1: Customer Request
   const handleReject = () => {
     Swal.fire({
-      title: "Reject Order",
-      text: "Are you sure you want to reject this order?",
+      title: "Cancel Order",
+      text: "Are you sure you want to cancel this order?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: theme === "dark" ? "#B8001F" : "#C7253E",
       cancelButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
       background: colors.primary[400],
       iconColor: "#ff6b6b",
-      confirmButtonText: "❌ Reject",
+      confirmButtonText: "❌ Cancel Order",
       cancelButtonText: "Cancel",
       color: colors.grey[100],
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        updateOrderStatus("rejected", "Order rejected by a moderator.");
+        updateOrderStatus("order_cancel", "Order cancelled.");
       }
     });
   };
@@ -342,8 +342,8 @@ const OrderPopup: React.FC<OrderProps> = ({
         url: `${baseUrl}/activity-logs/create`,
         category: "Order",
         actionType:
-          newStatus == "rejected"
-            ? "Order Rejected"
+          newStatus == "order_cancel"
+            ? "Order Cancelled"
             : newStatus == "order_confirm"
             ? "Order Confirmed"
             : newStatus == "order_in_progress"
@@ -467,7 +467,14 @@ const OrderPopup: React.FC<OrderProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex p-5 items-center justify-center bg-black bg-opacity-50">
-      <div className="w-full p-6 text-black lg:max-[90vh] md:max-h-[85vh] max-h-[90vh] overflow-y-auto bg-white rounded-lg shadow-lg lg:w-2/3">
+      <div className="relative w-full p-6 text-black lg:max-[90vh] md:max-h-[85vh] max-h-[90vh] overflow-y-auto bg-white rounded-lg shadow-lg lg:w-2/3">
+        <button
+          aria-label="Close"
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 bg-transparent border-none text-xl"
+        >
+          ✕
+        </button>
         <h2 className="mb-4 text-lg font-bold text-center text-black">
           Edit Order
         </h2>
@@ -514,7 +521,7 @@ const OrderPopup: React.FC<OrderProps> = ({
                     : order.orderStatus === "delivered" ||
                       order.orderStatus === "order_delivered"
                     ? "bg-green-100 text-green-800"
-                    : order.orderStatus === "rejected"
+                    : order.orderStatus === "order_cancel"
                     ? "bg-red-100 text-red-800"
                     : "bg-gray-100 text-gray-800"
                 }`}
@@ -536,13 +543,13 @@ const OrderPopup: React.FC<OrderProps> = ({
                   ? "Delivered"
                   : order.orderStatus === "order_delivered"
                   ? "Order Delivered"
-                  : order.orderStatus === "rejected"
-                  ? "Rejected"
+                  : order.orderStatus === "order_cancel"
+                  ? "Order Cancelled"
                   : order.orderStatus}
               </span>
             </div>
           </div>
-          {order.orderStatus !== "rejected" &&
+          {order.orderStatus !== "order_cancel" &&
           order.orderStatus !== "delivered" &&
           order.orderStatus !== "order_delivered" ? (
             <div className="col-span-1 md:col-span-1">
@@ -586,7 +593,7 @@ const OrderPopup: React.FC<OrderProps> = ({
                 🟢 Stage 1: New Order
               </h3>
               <p className="text-xs text-blue-700">
-                This order is awaiting approval. Choose an action below:
+                
               </p>
               {order.message && (
                 <p className="text-xs mt-2 italic text-blue-600">
@@ -594,31 +601,31 @@ const OrderPopup: React.FC<OrderProps> = ({
                 </p>
               )}
             </div>
-            <div className="flex justify-end space-x-4">
-              <button
-                className="px-4 py-3 bg-gray-300 rounded-md hover:bg-gray-400 text-[12px] w-full"
-                onClick={onClose}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] w-full flex items-center justify-center gap-1"
-                onClick={saveChanges}
-              >
-                💾 Save Changes
-              </button>
-              <button
-                className="px-4 py-3 text-white bg-red-500 rounded-md hover:bg-red-600 text-[12px] w-full flex items-center justify-center gap-1"
-                onClick={handleReject}
-              >
-                ❌ Reject
-              </button>
-              <button
-                className="px-4 py-3 text-white bg-green-500 rounded-md hover:bg-green-600 text-[12px] w-full flex items-center justify-center gap-1"
-                onClick={handleApprove}
-              >
-                ✅ Approve
-              </button>
+            <div className="mt-4 flex items-center justify-between">
+              <div>
+                <button
+                  className="px-3 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 text-[12px]"
+                  onClick={handleReject}
+                >
+                  ❌ Cancel Order
+                </button>
+              </div>
+              <div className="flex-1 mx-4">
+                <button
+                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1"
+                  onClick={saveChanges}
+                >
+                  💾 Save Message
+                </button>
+              </div>
+              <div className="min-w-[140px]">
+                <button
+                  className="w-full px-4 py-3 text-white bg-green-500 rounded-md hover:bg-green-600 text-[12px] flex items-center justify-center gap-1"
+                  onClick={handleApprove}
+                >
+                  ✅ Accept
+                </button>
+              </div>
             </div>
           </div>
         ) : /* Stage 2: Order Received (Previously Pending) - Show Confirm button only */
@@ -638,25 +645,24 @@ const OrderPopup: React.FC<OrderProps> = ({
                 </p>
               )}
             </div>
-            <div className="flex justify-end space-x-4">
-              <button
-                className="px-4 py-3 bg-gray-300 rounded-md hover:bg-gray-400 text-[12px] w-full"
-                onClick={onClose}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] w-full flex items-center justify-center gap-1"
-                onClick={saveChanges}
-              >
-                💾 Save Changes
-              </button>
-              <button
-                className="px-4 py-3 text-white bg-blue-500 rounded-md hover:bg-blue-600 text-[12px] w-full flex items-center justify-center gap-2"
-                onClick={handleConfirm}
-              >
-                ✅ Confirm
-              </button>
+            <div className="mt-4 flex items-center justify-between">
+              <div />
+              <div className="flex-1 mx-4">
+                <button
+                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1"
+                  onClick={saveChanges}
+                >
+                  💾 Save Changes
+                </button>
+              </div>
+              <div className="min-w-[140px]">
+                <button
+                  className="w-full px-4 py-3 text-white bg-blue-500 rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-2"
+                  onClick={handleConfirm}
+                >
+                  ✅ Confirm
+                </button>
+              </div>
             </div>
           </div>
         ) : /* Stage 3: Confirmed - Show Finish button only */
@@ -676,25 +682,24 @@ const OrderPopup: React.FC<OrderProps> = ({
                 </p>
               )}
             </div>
-            <div className="flex justify-end space-x-4">
-              <button
-                className="px-4 py-3 bg-gray-300 rounded-md hover:bg-gray-400 text-[12px] w-full"
-                onClick={onClose}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] w-full flex items-center justify-center gap-1"
-                onClick={saveChanges}
-              >
-                💾 Save Changes
-              </button>
-              <button
-                className="px-4 py-3 text-white bg-purple-500 rounded-md hover:bg-purple-600 text-[12px] w-full flex items-center justify-center gap-2"
-                onClick={handleMarkAsFinished}
-              >
-                ✅ Order In Progress
-              </button>
+            <div className="mt-4 flex items-center justify-between">
+              <div />
+              <div className="flex-1 mx-4">
+                <button
+                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1"
+                  onClick={saveChanges}
+                >
+                  💾 Save Changes
+                </button>
+              </div>
+              <div className="min-w-[140px]">
+                <button
+                  className="w-full px-4 py-3 text-white bg-purple-500 rounded-md hover:bg-purple-600 text-[12px] flex items-center justify-center gap-2"
+                  onClick={handleMarkAsFinished}
+                >
+                  ✅ Order In Progress
+                </button>
+              </div>
             </div>
           </div>
         ) : /* Stage 4: Finished - Show Deliver button only */
@@ -715,31 +720,30 @@ const OrderPopup: React.FC<OrderProps> = ({
                 </p>
               )}
             </div>
-            <div className="flex justify-end space-x-4">
-              <button
-                className="px-4 py-3 bg-gray-300 rounded-md hover:bg-gray-400 text-[12px] w-full"
-                onClick={onClose}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] w-full flex items-center justify-center gap-1"
-                onClick={saveChanges}
-              >
-                💾 Save Changes
-              </button>
-              <button
-                className="px-4 py-3 text-white bg-green-600 rounded-md hover:bg-green-700 text-[12px] w-full flex items-center justify-center gap-2"
-                onClick={handleMarkAsDelivered}
-              >
-                ✅ Delivered
-              </button>
+            <div className="mt-4 flex items-center justify-between">
+              <div />
+              <div className="flex-1 mx-4">
+                <button
+                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1"
+                  onClick={saveChanges}
+                >
+                  💾 Save Changes
+                </button>
+              </div>
+              <div className="min-w-[140px]">
+                <button
+                  className="w-full px-4 py-3 text-white bg-green-600 rounded-md hover:bg-green-700 text-[12px] flex items-center justify-center gap-2"
+                  onClick={handleMarkAsDelivered}
+                >
+                  ✅ Delivered
+                </button>
+              </div>
             </div>
           </div>
         ) : /* Final Stage: Delivered/Rejected - Read-only, no action buttons */
         order.orderStatus === "delivered" ||
           order.orderStatus === "order_delivered" ||
-          order.orderStatus === "rejected" ? (
+          order.orderStatus === "order_cancel" ? (
           <div className="mt-6">
             <div
               className={`mb-4 p-4 border-l-4 rounded ${
@@ -761,7 +765,7 @@ const OrderPopup: React.FC<OrderProps> = ({
                 {order.orderStatus === "delivered" ||
                 order.orderStatus === "order_delivered"
                   ? "Order Delivered"
-                  : "Rejected"}
+                  : "Order Cancelled"}
               </h3>
               <p
                 className={`text-xs ${
@@ -774,7 +778,7 @@ const OrderPopup: React.FC<OrderProps> = ({
                 {order.orderStatus === "delivered" ||
                 order.orderStatus === "order_delivered"
                   ? "This order has been successfully delivered. The process is complete."
-                  : "This order has been rejected. No further actions are available."}
+                  : "This order has been Cancelled. No further actions are available."}
               </p>
               {order.message && (
                 <p
@@ -789,35 +793,28 @@ const OrderPopup: React.FC<OrderProps> = ({
                 </p>
               )}
             </div>
-            <div className="flex justify-end space-x-4">
-              <button
-                className="px-4 py-3 bg-gray-300 rounded-md hover:bg-gray-400 text-[12px] w-full"
-                onClick={onClose}
-              >
-                Close
-              </button>
-              <button
-                className="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] w-full flex items-center justify-center gap-1"
-                onClick={saveChanges}
-              >
-                💾 Save Message
-              </button>
+            <div className="mt-4 flex items-center justify-end">
+              <div className="w-full max-w-[420px]">
+                <button
+                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1"
+                  onClick={saveChanges}
+                >
+                  💾 Save Message
+                </button>
+              </div>
             </div>
           </div>
         ) : (
-          <div className="flex justify-end mt-6 space-x-4">
-            <button
-              className="px-4 py-3 bg-gray-300 rounded-md hover:bg-gray-400 text-[12px] w-full"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-            <button
-              className="px-4 py-3 text-white bg-blue-500 rounded-md hover:bg-blue-600 text-[12px] w-full"
-              onClick={handleSave}
-            >
-              Save
-            </button>
+          <div className="flex items-center justify-between mt-6">
+            <div />
+            <div className="w-full max-w-[220px]">
+              <button
+                className="w-full px-4 py-3 text-white bg-blue-500 rounded-md hover:bg-blue-600 text-[12px]"
+                onClick={handleSave}
+              >
+                Save
+              </button>
+            </div>
           </div>
         )}
       </div>

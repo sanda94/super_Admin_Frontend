@@ -13,7 +13,7 @@ interface OrderWorkflowSummaryProps {
     order_confirm: number;
     order_processing: number;
     order_delivered: number;
-    rejected: number;
+    order_cancel: number;
   };
   onStatusFilter: (status: string | null) => void;
   activeFilter: string | null;
@@ -58,13 +58,13 @@ const OrderWorkflowSummary: React.FC<OrderWorkflowSummaryProps> = ({ orderCounts
       count: orderCounts.order_delivered
     },
     {
-      status: "rejected",
-      label: "Rejected",
+      status: "order_cancel",
+      label: "Order Cancel",
       icon: FaTimes,
       color: "bg-red-500",
       textColor: "text-red-700",
       bgLight: "bg-red-50",
-      count: orderCounts.rejected
+      count: orderCounts.order_cancel
     }
   ];
 
@@ -151,7 +151,7 @@ const OrderWorkflowSummary: React.FC<OrderWorkflowSummaryProps> = ({ orderCounts
       
       {/* Progress Labels - Updated */}
       <div className="mt-2 flex justify-between text-xs text-gray-600">
-        <span>Request</span>
+        <span>New Order</span>
         <span>Order Confirm</span>
         <span>Order In Progress</span>
         <span>Order Delivered</span>

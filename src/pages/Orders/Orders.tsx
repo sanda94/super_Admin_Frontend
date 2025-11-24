@@ -110,7 +110,7 @@ const Orders: React.FC = () => {
       order_confirm: 0,
       order_processing: 0,
       order_delivered: 0,
-      rejected: 0,
+      order_cancel: 0,
     };
 
     orders.forEach((order) => {
@@ -176,8 +176,8 @@ const Orders: React.FC = () => {
         return "Order In Progress";
       case "order_delivered":
         return "Order Delivered";
-      case "rejected":
-        return "Rejected";
+      case "order_cancel":
+        return "Order Cancel";
       case "finished":
         return "Finished";
       case "delivered":
@@ -577,7 +577,7 @@ const Orders: React.FC = () => {
             status === "cancelled" ||
             status === "canceled" ||
             status === "cancel" ||
-            status === "rejected"
+            status === "order_cancel"
           )
             color = "bg-red-500";
           else if (
@@ -878,7 +878,7 @@ const Orders: React.FC = () => {
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 lg:justify-start">
         <PageHeader
-          title={UserType == "Customer" ? "eShop Orders" : "ORDER MANAGEMENTS"}
+          title={UserType == "Customer" ? "eShop Orders" : "ORDER MANAGEMENT"}
           subTitle=""
         />
         {/* Export buttons for Customer - CSV button hidden as requested */}
@@ -940,7 +940,7 @@ const Orders: React.FC = () => {
             <div className="mb-4 mt-5 p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-blue-700">
-                  Showing orders with status:{" "}
+                  {" "}
                   <strong className="capitalize">
                     {getStatusLabel(statusFilter)}
                   </strong>
