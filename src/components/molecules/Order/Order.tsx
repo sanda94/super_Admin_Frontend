@@ -110,15 +110,15 @@ const OrderPopup: React.FC<OrderProps> = ({
   // Handle Approve action for Stage 1: Customer Request
   const handleApprove = () => {
     Swal.fire({
-      title: "Approve Order",
-      text: "Are you sure you want to approve this order?",
+      title: "Accept Order",
+      text: "Are you sure you want to accept this order?",
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
       cancelButtonColor: theme === "dark" ? "#B8001F" : "#C7253E",
       background: colors.primary[400],
       iconColor: colors.blueAccent[400],
-      confirmButtonText: "✅ Approve",
+      confirmButtonText: "✅ Accept",
       cancelButtonText: "Cancel",
       color: colors.grey[100],
       allowOutsideClick: false,
@@ -127,7 +127,7 @@ const OrderPopup: React.FC<OrderProps> = ({
         // Changed to "order_confirm" to match new workflow
         updateOrderStatus(
           "order_confirm",
-          "Order approved and moved to confirmed status."
+          ""
         );
       }
     });
@@ -172,7 +172,7 @@ const OrderPopup: React.FC<OrderProps> = ({
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        updateOrderStatus("order_confirm", "Order confirmed by moderator.");
+        updateOrderStatus("order_confirm", "");
       }
     });
   };
@@ -196,7 +196,7 @@ const OrderPopup: React.FC<OrderProps> = ({
       if (result.isConfirmed) {
         updateOrderStatus(
           "order_in_progress",
-          "Order marked as in progress by Moderator"
+          ""
         );
       }
     });

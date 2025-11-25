@@ -1356,7 +1356,7 @@ const EShop: React.FC = () => {
             </div>
           )}
 
-          {UserType === "Admin" ? (
+          {UserType === "Admin" || UserType === "Moderator" ? (
             <div className="flex flex-col md:flex-row items-center justify-center gap-5">
               <button
                 onClick={HandleAddNewProductButton}
@@ -1533,48 +1533,44 @@ const EShop: React.FC = () => {
               {isEditing ? "Edit Product" : "Add New Product"}
             </h2>
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-              {UserType !== "Moderator" && (
-                <div>
-                  <label className="w-full font-semibold text-[13px]">
-                    Product Name{" "}
-                    <strong className="text-red-500 text-[12px]">*</strong>
-                  </label>
-                  <input
-                    type="text"
-                    name="productName"
-                    value={NewProduct.productName}
-                    onChange={(e) =>
-                      setNewProduct({
-                        ...NewProduct,
-                        productName: e.target.value,
-                      })
-                    }
-                    placeholder="Product Name"
-                    className="w-full p-2 mt-2 text-[12px] border rounded-md"
-                  />
-                </div>
-              )}
-              {UserType !== "Moderator" && (
-                <div>
-                  <label className="w-full font-semibold text-[13px]">
-                    SKU Number{" "}
-                    <strong className="text-red-500 text-[12px]">*</strong>
-                  </label>
-                  <input
-                    type="text"
-                    name="skuNumber"
-                    value={NewProduct.skuNumber}
-                    onChange={(e) =>
-                      setNewProduct({
-                        ...NewProduct,
-                        skuNumber: e.target.value,
-                      })
-                    }
-                    placeholder="SKU Number"
-                    className="w-full p-2 mt-2 text-[12px] border rounded-md"
-                  />
-                </div>
-              )}
+              <div>
+                <label className="w-full font-semibold text-[13px]">
+                  Product Name{" "}
+                  <strong className="text-red-500 text-[12px]">*</strong>
+                </label>
+                <input
+                  type="text"
+                  name="productName"
+                  value={NewProduct.productName}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...NewProduct,
+                      productName: e.target.value,
+                    })
+                  }
+                  placeholder="Product Name"
+                  className="w-full p-2 mt-2 text-[12px] border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="w-full font-semibold text-[13px]">
+                  SKU Number{" "}
+                  <strong className="text-red-500 text-[12px]">*</strong>
+                </label>
+                <input
+                  type="text"
+                  name="skuNumber"
+                  value={NewProduct.skuNumber}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...NewProduct,
+                      skuNumber: e.target.value,
+                    })
+                  }
+                  placeholder="SKU Number"
+                  className="w-full p-2 mt-2 text-[12px] border rounded-md"
+                />
+              </div>
               {UserType === "SuperAdmin" && (
                 <div>
                   <label className="w-full font-semibold text-[13px]">
@@ -1602,56 +1598,54 @@ const EShop: React.FC = () => {
                 </div>
               )}
 
-              {UserType !== "Moderator" && (
-                <div>
-                  <label
-                    htmlFor="unitWeight"
-                    className="w-full font-semibold text-[13px]"
+              <div>
+                <label
+                  htmlFor="unitWeight"
+                  className="w-full font-semibold text-[13px]"
+                >
+                  Unit Weight{" "}
+                  <strong className="text-red-500 text-[12px]">*</strong>
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    id="unitweight"
+                    name="unitWeight"
+                    value={NewProduct.unitWeight}
+                    placeholder="Unit Weight"
+                    onChange={(e) =>
+                      setNewProduct({
+                        ...NewProduct,
+                        unitWeight: e.target.value,
+                      })
+                    }
+                    className="w-[60%] p-2 mt-2 text-[12px] border rounded-md"
+                  />
+                  <select
+                    name="unitWeightUnit"
+                    value={NewProduct.unitWeightUnit}
+                    onChange={(e) =>
+                      setNewProduct({
+                        ...NewProduct,
+                        unitWeightUnit: e.target.value,
+                      })
+                    }
+                    className="p-2 w-[40%] mt-2 text-[12px] border rounded-md"
                   >
-                    Unit Weight{" "}
-                    <strong className="text-red-500 text-[12px]">*</strong>
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      id="unitweight"
-                      name="unitWeight"
-                      value={NewProduct.unitWeight}
-                      placeholder="Unit Weight"
-                      onChange={(e) =>
-                        setNewProduct({
-                          ...NewProduct,
-                          unitWeight: e.target.value,
-                        })
-                      }
-                      className="w-[60%] p-2 mt-2 text-[12px] border rounded-md"
-                    />
-                    <select
-                      name="unitWeightUnit"
-                      value={NewProduct.unitWeightUnit}
-                      onChange={(e) =>
-                        setNewProduct({
-                          ...NewProduct,
-                          unitWeightUnit: e.target.value,
-                        })
-                      }
-                      className="p-2 w-[40%] mt-2 text-[12px] border rounded-md"
-                    >
-                      <option value="mg">Milligram (mg)</option>
-                      <option value="g">Gram (g)</option>
-                      <option value="kg">Kilogram (kg)</option>
-                      <option value="t">Metric ton (t)</option>
-                      <option value="lb">Pound (lb)</option>
-                      <option value="mL">Milliliter (mL)</option>
-                      <option value="cL">Centiliter (cL)</option>
-                      <option value="dL">Deciliter (dL)</option>
-                      <option value="L">Liter (L)</option>
-                      <option value="m³">Cubic meter (m³)</option>
-                    </select>
-                  </div>
+                    <option value="mg">Milligram (mg)</option>
+                    <option value="g">Gram (g)</option>
+                    <option value="kg">Kilogram (kg)</option>
+                    <option value="t">Metric ton (t)</option>
+                    <option value="lb">Pound (lb)</option>
+                    <option value="mL">Milliliter (mL)</option>
+                    <option value="cL">Centiliter (cL)</option>
+                    <option value="dL">Deciliter (dL)</option>
+                    <option value="L">Liter (L)</option>
+                    <option value="m³">Cubic meter (m³)</option>
+                  </select>
                 </div>
-              )}
+              </div>
 
-              {(UserType === "SuperAdmin" || UserType === "Admin") && (
+              {(UserType === "SuperAdmin" || UserType === "Admin" || UserType === "Moderator") && (
                 <div>
                   <label className="w-full font-semibold text-[13px]">
                     Approval Threshold{" "}
@@ -1673,7 +1667,7 @@ const EShop: React.FC = () => {
                   />
                 </div>
               )}
-              {(UserType === "SuperAdmin" || UserType === "Admin") && (
+              {(UserType === "SuperAdmin" || UserType === "Admin" || UserType === "Moderator") && (
                 <div>
                   <label className="w-full font-semibold text-[13px]">
                     PO Number{" "}
@@ -1694,7 +1688,7 @@ const EShop: React.FC = () => {
                   />
                 </div>
               )}
-              {(UserType === "SuperAdmin" || UserType === "Admin") && (
+              {(UserType === "SuperAdmin" || UserType === "Admin" || UserType === "Moderator") && (
                 <div>
                   <label className="w-full font-semibold text-[13px]">
                     Minimum Products Count{" "}
@@ -1716,69 +1710,63 @@ const EShop: React.FC = () => {
                   />
                 </div>
               )}
-              {UserType !== "Moderator" && (
-                <div className="md:col-span-2">
+              <div className="md:col-span-2">
+                <label className="w-full font-semibold text-[13px]">
+                  Description{" "}
+                </label>
+                <textarea
+                  name="description"
+                  value={NewProduct.description}
+                  onChange={(e) =>
+                    setNewProduct({
+                      ...NewProduct,
+                      description: e.target.value,
+                    })
+                  }
+                  placeholder="Description"
+                  className="w-full p-2 mt-2 min-h-[100px] text-[12px] border rounded-md"
+                />
+              </div>
+
+              <div className="flex flex-col md:flex-row gap-5 md:col-span-2 ">
+                <div className="flex-1">
                   <label className="w-full font-semibold text-[13px]">
-                    Description{" "}
+                    Price ($){" "}
+                    <strong className="text-red-500 text-[12px]">*</strong>
                   </label>
-                  <textarea
-                    name="description"
-                    value={NewProduct.description}
+                  <input
+                    type="number"
+                    value={NewProduct.price}
+                    min={0}
+                    name="price"
+                    onChange={(e) =>
+                      setNewProduct({ ...NewProduct, price: e.target.value })
+                    }
+                    placeholder="Price"
+                    className="w-full p-2 mt-2 text-[12px] border rounded-md"
+                  />
+                </div>
+
+                <div className="flex-1">
+                  <label className="w-full font-semibold text-[13px]">
+                    Sale Price ($){" "}
+                    <strong className="text-red-500 text-[12px]">*</strong>
+                  </label>
+                  <input
+                    type="number"
+                    value={NewProduct.salePrice}
+                    min={0}
+                    name="salePrice"
+                    placeholder="Sale Price"
                     onChange={(e) =>
                       setNewProduct({
                         ...NewProduct,
-                        description: e.target.value,
+                        salePrice: e.target.value,
                       })
                     }
-                    placeholder="Description"
-                    className="w-full p-2 mt-2 min-h-[100px] text-[12px] border rounded-md"
+                    className="w-full p-2 mt-2 text-[12px] border rounded-md"
                   />
                 </div>
-              )}
-
-              <div className="flex flex-col md:flex-row gap-5 md:col-span-2 ">
-                {UserType !== "Moderator" && (
-                  <div className="flex-1">
-                    <label className="w-full font-semibold text-[13px]">
-                      Price ($){" "}
-                      <strong className="text-red-500 text-[12px]">*</strong>
-                    </label>
-                    <input
-                      type="number"
-                      value={NewProduct.price}
-                      min={0}
-                      name="price"
-                      onChange={(e) =>
-                        setNewProduct({ ...NewProduct, price: e.target.value })
-                      }
-                      placeholder="Price"
-                      className="w-full p-2 mt-2 text-[12px] border rounded-md"
-                    />
-                  </div>
-                )}
-
-                {UserType !== "Moderator" && (
-                  <div className="flex-1">
-                    <label className="w-full font-semibold text-[13px]">
-                      Sale Price ($){" "}
-                      <strong className="text-red-500 text-[12px]">*</strong>
-                    </label>
-                    <input
-                      type="number"
-                      value={NewProduct.salePrice}
-                      min={0}
-                      name="salePrice"
-                      placeholder="Sale Price"
-                      onChange={(e) =>
-                        setNewProduct({
-                          ...NewProduct,
-                          salePrice: e.target.value,
-                        })
-                      }
-                      className="w-full p-2 mt-2 text-[12px] border rounded-md"
-                    />
-                  </div>
-                )}
 
                 <div className="flex-1">
                   <label className="w-full font-semibold text-[13px]">
@@ -1801,32 +1789,30 @@ const EShop: React.FC = () => {
                   />
                 </div>
               </div>
-              {UserType !== "Moderator" && (
-                <div>
-                  <label className="w-full font-semibold text-[13px]">
-                    Category{" "}
-                    <strong className="text-red-500 text-[12px]">*</strong>
-                  </label>
-                  <select
-                    name="category"
-                    value={NewProduct.category}
-                    onChange={(e) =>
-                      setNewProduct({ ...NewProduct, category: e.target.value })
-                    }
-                    className="w-full p-2 mt-2 text-[12px] border rounded-md"
-                  >
-                    <option value="None">None</option>
-                    {categories?.length > 0 &&
-                      categories.map((c, index) => (
-                        <option key={index} value={c.category}>
-                          {c.category}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              )}
+              <div>
+                <label className="w-full font-semibold text-[13px]">
+                  Category{" "}
+                  <strong className="text-red-500 text-[12px]">*</strong>
+                </label>
+                <select
+                  name="category"
+                  value={NewProduct.category}
+                  onChange={(e) =>
+                    setNewProduct({ ...NewProduct, category: e.target.value })
+                  }
+                  className="w-full p-2 mt-2 text-[12px] border rounded-md"
+                >
+                  <option value="None">None</option>
+                  {categories?.length > 0 &&
+                    categories.map((c, index) => (
+                      <option key={index} value={c.category}>
+                        {c.category}
+                      </option>
+                    ))}
+                </select>
+              </div>
 
-              {(UserType === "Admin" || UserType === "SuperAdmin") && (
+              {(UserType === "Admin" || UserType === "SuperAdmin" || UserType === "Moderator") && (
                 <div>
                   <label className="w-full font-semibold text-[13px]">
                     Tags
@@ -1841,58 +1827,56 @@ const EShop: React.FC = () => {
                   />
                 </div>
               )}
-              {UserType !== "Moderator" && (
-                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
-                  <div>
-                    <label className="w-full font-semibold text-[13px]">
-                      Image 1
-                    </label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) =>
-                        setNewProduct({
-                          ...NewProduct,
-                          image1: e.target.files?.[0] || null,
-                        })
-                      }
-                      className="w-full p-2 mt-2 text-[12px] border rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="w-full font-semibold text-[13px]">
-                      Image 2
-                    </label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) =>
-                        setNewProduct({
-                          ...NewProduct,
-                          image2: e.target.files?.[0] || null,
-                        })
-                      }
-                      className="w-full p-2 mt-2 text-[12px] border rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="w-full font-semibold text-[13px]">
-                      Image 3
-                    </label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) =>
-                        setNewProduct({
-                          ...NewProduct,
-                          image3: e.target.files?.[0] || null,
-                        })
-                      }
-                      className="w-full p-2 mt-2 text-[12px] border rounded-md"
-                    />
-                  </div>
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
+                <div>
+                  <label className="w-full font-semibold text-[13px]">
+                    Image 1
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      setNewProduct({
+                        ...NewProduct,
+                        image1: e.target.files?.[0] || null,
+                      })
+                    }
+                    className="w-full p-2 mt-2 text-[12px] border rounded-md"
+                  />
                 </div>
-              )}
+                <div>
+                  <label className="w-full font-semibold text-[13px]">
+                    Image 2
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      setNewProduct({
+                        ...NewProduct,
+                        image2: e.target.files?.[0] || null,
+                      })
+                    }
+                    className="w-full p-2 mt-2 text-[12px] border rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="w-full font-semibold text-[13px]">
+                    Image 3
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      setNewProduct({
+                        ...NewProduct,
+                        image3: e.target.files?.[0] || null,
+                      })
+                    }
+                    className="w-full p-2 mt-2 text-[12px] border rounded-md"
+                  />
+                </div>
+              </div>
             </div>
             <div className="flex justify-end mt-6 space-x-4">
               <button

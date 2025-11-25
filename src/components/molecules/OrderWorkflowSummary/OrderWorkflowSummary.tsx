@@ -71,7 +71,7 @@ const OrderWorkflowSummary: React.FC<OrderWorkflowSummaryProps> = ({ orderCounts
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-800">Order Workflow Summary</h3>
+        <h3 className="text-lg font-semibold text-gray-800">Order Summary</h3>
         {activeFilter && (
           <button
             onClick={() => onStatusFilter(null)}
