@@ -1356,7 +1356,7 @@ const EShop: React.FC = () => {
             </div>
           )}
 
-          {UserType === "Admin" || UserType === "Moderator" ? (
+          {(UserType === "Admin" || UserType === "Moderator") ? (
             <div className="flex flex-col md:flex-row items-center justify-center gap-5">
               <button
                 onClick={HandleAddNewProductButton}
@@ -1365,7 +1365,7 @@ const EShop: React.FC = () => {
                 <FaBoxOpen size={20} />
                 Add New Products
               </button>
-              {(UserType === "Admin" || UserType === "SuperAdmin") &&
+              {UserType === "Admin" &&
                 products.length !== 0 && (
                   <>
                     <button

@@ -136,26 +136,7 @@ const OrderWorkflowSummary: React.FC<OrderWorkflowSummaryProps> = ({ orderCounts
             </div>
           );
         })}
-      </div>
-      
-      {/* Workflow Progress Line */}
-      <div className="mt-6 flex items-center justify-between relative">
-        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 -translate-y-1/2"></div>
-        {workflowSteps.slice(0, 4).map((step) => (
-          <div
-            key={step.status}
-            className={`${step.color} w-4 h-4 rounded-full relative z-10 shadow-sm`}
-          ></div>
-        ))}
-      </div>
-      
-      {/* Progress Labels - Updated */}
-      <div className="mt-2 flex justify-between text-xs text-gray-600">
-        <span>New Order</span>
-        <span>Order Confirm</span>
-        <span>Order In Progress</span>
-        <span>Order Delivered</span>
-      </div>
+      </div> 
     </div>
   );
 };
