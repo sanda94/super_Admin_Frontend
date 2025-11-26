@@ -120,8 +120,6 @@ const Chat: React.FC<ChatProps> = ({ onlineUserIds, closeChat }) => {
                 }
               );
 
-              console.log("Message responce: ", messagesResponse.data.data);
-
               if (
                 messagesResponse.data.status &&
                 messagesResponse.data.data?.chat &&
@@ -437,8 +435,6 @@ const Chat: React.FC<ChatProps> = ({ onlineUserIds, closeChat }) => {
 
   useEffect(() => {
     const handleReceiveMessage = (data: ChatMessage) => {
-      console.log("New message received:", data);
-
       // Skip if this message is from the current user (to prevent duplicates)
       if (data.sender.senderId === UserId) {
         return;

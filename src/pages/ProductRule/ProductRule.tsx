@@ -64,12 +64,13 @@ const ProductRule: React.FC = () => {
 
   const [productRules, setProductRules] = useState<ProductRule[]>([]);
   const [newProductRule, setNewProductRule] = useState({
-    productId: "",
+    productIds: [] as string[],
     image: null as File | null,
-    productName: "",
+    selectedProducts: [] as Product[],
     userId: "",
     userName: "",
   });
+  const [productSearchQuery, setProductSearchQuery] = useState<string>("");
 
   const [products, setProducts] = useState<Product[]>([]);
   const [customers, setCustomers] = useState<User[]>([]);
@@ -183,63 +184,71 @@ const ProductRule: React.FC = () => {
     }
   };
 
-  // ---------- Function to Create New Product Rule ----------
-  const CreateProductRule = async () => {
+  // ---------- Function to Create New Product Rules for Multiple Products ----------
+  const CreateProductRules = async () => {
     const ImageUrl = await ImageUpload();
-    const data = {
-      productId: newProductRule.productId,
-      imageUrl:
-        ImageUrl !== null
-          ? `${baseUrl.replace("/api", "")}/uploads/${ImageUrl}`
-          : null,
-      userId: newProductRule.userId,
-      assignedBy: UserId,
-      companyId: CompanyId,
-    };
+    
+    // Create a rule for each selected product
     try {
-      const response = await axios.post(
-        `${baseUrl}/product-rules/create`,
-        data,
-        {
-          headers: {
-            token: `Bearer ${Token}`,
-          },
-        }
-      );
+      for (const productId of newProductRule.productIds) {
+        const data = {
+          productId: productId,
+          imageUrl:
+            ImageUrl !== null
+              ? `${baseUrl.replace("/api", "")}/uploads/${ImageUrl}`
+              : null,
+          userId: newProductRule.userId,
+          assignedBy: UserId,
+          companyId: CompanyId,
+        };
+        
+        const response = await axios.post(
+          `${baseUrl}/product-rules/create`,
+          data,
+          {
+            headers: {
+              token: `Bearer ${Token}`,
+            },
+          }
+        );
 
-      if (response.data.status) {
-        Swal.fire({
-          title: "",
-          text: "New Rule Created Successfully!",
-          icon: "success",
-          showCancelButton: false,
-          confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
-          background: colors.primary[400],
-          iconColor: "#06D001",
-          confirmButtonText: "Ok",
-          color: colors.grey[100],
-          allowOutsideClick: false,
-        });
-        FetchData();
-        FetchProductsAndCustomers();
-        setIsFormOpen(false);
-        setNewProductRule({
-          productId: "",
-          productName: "",
-          image: null,
-          userId: "",
-          userName: "",
-        });
+        if (!response.data.status) {
+          throw new Error(response.data.error?.message || "Failed to create rule");
+        }
       }
+      
+      Swal.fire({
+        title: "",
+        text: `${newProductRule.selectedProducts.length} Product Rule(s) Created Successfully!`,
+        icon: "success",
+        showCancelButton: false,
+        confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
+        background: colors.primary[400],
+        iconColor: "#06D001",
+        confirmButtonText: "Ok",
+        color: colors.grey[100],
+        allowOutsideClick: false,
+      });
+      FetchData();
+      FetchProductsAndCustomers();
+      setIsFormOpen(false);
+      setNewProductRule({
+        productIds: [],
+        selectedProducts: [],
+        image: null,
+        userId: "",
+        userName: "",
+      });
+      setProductSearchQuery("");
     } catch (error: any) {
       console.log(error);
-      notify(error.response.data.error.message, "error");
+      notify(error.response?.data?.error?.message || error.message || "An error occurred", "error");
     }
   };
 
   const handleSubmit = () => {
-    if (!newProductRule.productName) {
-      notify("Select Product Name before click save button.", "info");
+    if (newProductRule.selectedProducts.length === 0) {
+      notify("Select at least one Product before saving.", "info");
       return;
     }
     if (!newProductRule.userName) {
@@ -248,7 +257,7 @@ const ProductRule: React.FC = () => {
     }
     Swal.fire({
       title: "",
-      text: "Are you sure, you want to Create New Rule?",
+      text: `Are you sure, you want to assign ${newProductRule.selectedProducts.length} product(s) to this customer?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
@@ -260,7 +269,7 @@ const ProductRule: React.FC = () => {
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        CreateProductRule();
+        CreateProductRules();
       }
     });
   };
@@ -296,13 +305,38 @@ const ProductRule: React.FC = () => {
   const handleCancelButtonClick = () => {
     setIsFormOpen(false);
     setNewProductRule({
-      productId: "",
-      productName: "",
+      productIds: [],
+      selectedProducts: [],
       image: null,
       userId: "",
       userName: "",
     });
+    setProductSearchQuery("");
   };
+
+  // Toggle product selection
+  const toggleProductSelection = (product: Product) => {
+    const isSelected = newProductRule.productIds.includes(product._id);
+    
+    if (isSelected) {
+      setNewProductRule({
+        ...newProductRule,
+        productIds: newProductRule.productIds.filter(id => id !== product._id),
+        selectedProducts: newProductRule.selectedProducts.filter(p => p._id !== product._id),
+      });
+    } else {
+      setNewProductRule({
+        ...newProductRule,
+        productIds: [...newProductRule.productIds, product._id],
+        selectedProducts: [...newProductRule.selectedProducts, product],
+      });
+    }
+  };
+
+  // Filter products based on search query
+  const filteredProducts = products.filter((product) =>
+    product.productName.toLowerCase().includes(productSearchQuery.toLowerCase())
+  );
 
   const statusChange = () => {};
 
@@ -463,89 +497,139 @@ const ProductRule: React.FC = () => {
       {/* Popup Form for Adding New Rule */}
       {isFormOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-5 overflow-y-auto bg-black bg-opacity-50">
-          <div className="w-full p-8 bg-white rounded-lg max-h-[90vh] overflow-y-auto lg:w-2/3">
+          <div className="w-full p-8 bg-white rounded-lg max-h-[90vh] overflow-y-auto lg:w-3/4">
             <h2 className="mb-4 text-lg font-bold text-center text-black">
               Add New Product Rule
             </h2>
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-              {/* Product Name */}
-              <div>
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+              {/* Product Selection Panel */}
+              <div className="lg:col-span-2">
                 <label className="w-full font-semibold text-[13px]">
-                  Product Name{" "}
+                  Select Products{" "}
                   <strong className="text-red-500 text-[12px]">*</strong>
                 </label>
-                <select
-                  name="managerName"
-                  value={newProductRule.productId}
-                  onChange={(e) =>
-                    setNewProductRule({
-                      ...newProductRule,
-                      productId: e.target.value,
-                      productName: e.target.selectedOptions[0].text,
-                    })
-                  }
-                  className="w-full p-2 mt-2 border text-[12px] rounded-md"
-                >
-                  <option>None</option>
-                  {products.length > 0 &&
-                    products.map((product) => (
-                      <option key={product._id} value={product._id}>
-                        {product.productName}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              {/* Customer Name */}
-              <div>
-                <label className="w-full font-semibold text-[13px]">
-                  Customer Name{" "}
-                  <strong className="text-red-500 text-[12px]">*</strong>
-                </label>
-                <select
-                  name="customerName"
-                  value={newProductRule.userId}
-                  onChange={(e) =>
-                    setNewProductRule({
-                      ...newProductRule,
-                      userId: e.target.value,
-                      userName: e.target.selectedOptions[0].text,
-                    })
-                  }
-                  className="w-full p-2 mt-2 border text-[12px] rounded-md"
-                >
-                  {" "}
-                  <option>None</option>
-                  {customers.length > 0 &&
-                    customers.map((customer) => (
-                      <option key={customer._id} value={customer._id}>
-                        {customer.fullName}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              {/* Image Upload */}
-              <div>
-                <label className="w-full font-semibold text-[13px]">
-                  Choose Image
-                </label>
+                
+                {/* Search Bar */}
                 <input
-                  type="file"
-                  name="image"
-                  onChange={HandleFileChange}
-                  className="w-full p-2 mt-2 border text-[12px] rounded-md"
+                  type="text"
+                  title="Search products"
+                  placeholder="Search products..."
+                  value={productSearchQuery}
+                  onChange={(e) => setProductSearchQuery(e.target.value)}
+                  className="w-full p-2 mt-2 border text-[12px] rounded-md focus:outline-none focus:border-blue-400"
                 />
+                
+                {/* Products List Panel */}
+                <div className="w-full p-3 mt-2 border rounded-md bg-gray-50 max-h-[250px] overflow-y-auto">
+                  {filteredProducts.length > 0 ? (
+                    <div className="space-y-2">
+                      {filteredProducts.map((product) => (
+                        <div
+                          key={product._id}
+                          className="flex items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer transition-colors"
+                          onClick={() => toggleProductSelection(product)}
+                        >
+                          <input
+                            type="checkbox"
+                            title={`Select ${product.productName}`}
+                            checked={newProductRule.productIds.includes(product._id)}
+                            onChange={() => toggleProductSelection(product)}
+                            className="w-4 h-4 cursor-pointer"
+                          />
+                          <label className="ml-3 text-sm font-medium text-gray-800 cursor-pointer flex-1">
+                            {product.productName}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500 text-center py-4">
+                      No products found
+                    </p>
+                  )}
+                </div>
+                
+                {/* Selected Products Display */}
+                {newProductRule.selectedProducts.length > 0 && (
+                  <div className="mt-3 p-2 bg-blue-50 rounded-md border border-blue-200">
+                    <p className="text-xs font-semibold text-blue-800 mb-2">
+                      Selected Products ({newProductRule.selectedProducts.length}):
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {newProductRule.selectedProducts.map((product) => (
+                        <span
+                          key={product._id}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-blue-200 text-blue-800 text-xs rounded-full"
+                        >
+                          {product.productName}
+                          <button
+                            type="button"
+                            onClick={() => toggleProductSelection(product)}
+                            className="ml-1 text-blue-600 hover:text-blue-800 font-bold"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Right Column: Customer & Image */}
+              <div className="flex flex-col gap-5">
+                {/* Customer Name */}
+                <div>
+                  <label className="w-full font-semibold text-[13px]">
+                    Customer Name{" "}
+                    <strong className="text-red-500 text-[12px]">*</strong>
+                  </label>
+                  <select
+                    title="Select customer"
+                    value={newProductRule.userId}
+                    onChange={(e) =>
+                      setNewProductRule({
+                        ...newProductRule,
+                        userId: e.target.value,
+                        userName: e.target.selectedOptions[0].text,
+                      })
+                    }
+                    className="w-full p-2 mt-2 border text-[12px] rounded-md focus:outline-none focus:border-blue-400"
+                  >
+                    <option value="">None</option>
+                    {customers.length > 0 &&
+                      customers.map((customer) => (
+                        <option key={customer._id} value={customer._id}>
+                          {customer.fullName}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                {/* Image Upload */}
+                <div>
+                  <label className="w-full font-semibold text-[13px]">
+                    Choose Image
+                  </label>
+                  <input
+                    type="file"
+                    title="Upload image"
+                    onChange={HandleFileChange}
+                    className="w-full p-2 mt-2 border text-[12px] rounded-md focus:outline-none focus:border-blue-400"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="flex justify-end mt-5 space-x-4">
+            <div className="flex justify-end gap-4 mt-5">
               <button
-                className="px-4 py-3 text-[12px] w-full bg-gray-400 rounded-lg hover:bg-gray-300 transition-colors duration-300"
+                className="px-4 py-3 text-[12px] w-full lg:w-auto bg-gray-400 rounded-lg hover:bg-gray-300 transition-colors duration-300"
                 onClick={handleCancelButtonClick}
               >
                 Cancel
               </button>
               <button
-                className="px-4 py-3 w-full text-[12px] text-white bg-blue-400 hover:bg-blue-300 transition-colors duration-300 rounded-lg"
+                className="px-4 py-3 w-full lg:w-auto text-[12px] text-white bg-blue-400 hover:bg-blue-300 transition-colors duration-300 rounded-lg"
                 onClick={handleSubmit}
               >
                 Save

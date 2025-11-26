@@ -146,24 +146,26 @@ const CreateChatPopup: React.FC<CreateChatPopupProps> = ({
 
   // ---------- Create a new chat ----------
   const CreateChat = async () => {
-    if (UserType !== "SuperAdmin") {
-      if (!selectedAdmin || !selectedCustomer) {
-        notify("Please select both Admin/Moderator and Customer!", "error");
-        return;
-      }
-    } else {
+    if (UserType === "SuperAdmin") {
       if (!selectedAdmin) {
         notify("Please select a user to chat with!", "error");
         return;
       }
+    } else {
+      if (!selectedAdmin || !selectedCustomer) {
+        notify("Please select both Admin/Moderator and Customer!", "error");
+        return;
+      }
     }
 
-    // ---------- Check if chat already exists ----------
+    // ---- Check existing chat ----
     let alreadyExists = false;
 
     if (UserType === "SuperAdmin") {
       alreadyExists = superAdminChatList.some(
-        (c) => c.userId === selectedAdmin
+        (c) =>
+          (c.userId === selectedAdmin && c.chatId) ||
+          (c.userId === UserId && c.chatId)
       );
     } else {
       alreadyExists = chatList.some(
@@ -176,20 +178,9 @@ const CreateChatPopup: React.FC<CreateChatPopupProps> = ({
     }
 
     if (alreadyExists) {
-      notify(
-        UserType === "SuperAdmin"
-          ? "Chat already exists with this user!"
-          : "Chat already exists between these users!",
-        "warning"
-      );
+      notify("Chat already exists!", "warning");
       return;
     }
-
-    const adminUser = users.find((u) => u._id === selectedAdmin);
-    const customerUser =
-      UserType === "SuperAdmin"
-        ? UserId // string
-        : users.find((u) => u._id === selectedCustomer);
 
     Swal.fire({
       title: "Create New Chat!",
@@ -202,43 +193,59 @@ const CreateChatPopup: React.FC<CreateChatPopupProps> = ({
       confirmButtonText: "Yes, Create",
       color: colors.grey[100],
     }).then(async (result) => {
-      if (result.isConfirmed && adminUser && customerUser) {
-        setLoading(true);
-        try {
-          const chatId = uuidv4();
+      if (!result.isConfirmed) return;
 
-          const data = {
+      setLoading(true);
+
+      try {
+        const chatId = uuidv4();
+
+        let data;
+
+        if (UserType === "SuperAdmin") {
+          // 🔥 SuperAdmin rule:
+          // user1 = SuperAdmin
+          // user2 = selected user
+          data = {
             chatId,
             actors: {
-              user1: {
-                userId: UserType === "SuperAdmin" ? UserId : adminUser._id,
-              },
-              user2: {
-                userId: UserType === "SuperAdmin" ? adminUser._id : UserId,
-              },
+              user1: { userId: UserId }, // SuperAdmin
+              user2: { userId: selectedAdmin }, // selected Admin/SuperAdmin
             },
-            companyId: UserType === "SuperAdmin" ? null : CompanyId,
+            companyId: null,
           };
-
-          const response = await axios.post(`${baseUrl}/chat/create`, data, {
-            headers: { token: `Bearer ${Token}` },
-          });
-
-          if (response.data.status) {
-            notify("Chat created successfully!", "success");
-            FetchAllChats();
-            setSelectedCustomer("");
-            setSelectedAdmin("");
-            reFreshChatList();
-          }
-        } catch (error: any) {
-          notify(
-            error.response?.data?.error?.message || "Failed to create chat",
-            "error"
-          );
-        } finally {
-          setLoading(false);
+        } else {
+          // 🔥 Admin rule:
+          // user1 = selected admin/moderator/manager
+          // user2 = selected customer
+          data = {
+            chatId,
+            actors: {
+              user1: { userId: selectedAdmin },
+              user2: { userId: selectedCustomer },
+            },
+            companyId: CompanyId,
+          };
         }
+
+        const response = await axios.post(`${baseUrl}/chat/create`, data, {
+          headers: { token: `Bearer ${Token}` },
+        });
+
+        if (response.data.status) {
+          notify("Chat created successfully!", "success");
+          FetchAllChats();
+          reFreshChatList();
+          setSelectedAdmin("");
+          setSelectedCustomer("");
+        }
+      } catch (error: any) {
+        notify(
+          error.response?.data?.error?.message || "Failed to create chat",
+          "error"
+        );
+      } finally {
+        setLoading(false);
       }
     });
   };
@@ -278,8 +285,6 @@ const CreateChatPopup: React.FC<CreateChatPopupProps> = ({
       }
     });
   };
-
-  console.log("Chat List: ", superAdminChatList);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-3">

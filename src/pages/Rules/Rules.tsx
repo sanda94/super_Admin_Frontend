@@ -88,7 +88,11 @@ const Devices: React.FC = () => {
     status: "",
     ruleType: "",
     companyId: "",
+    // multi-select support
+    deviceIds: [] as string[],
+    selectedDevices: [] as Device[],
   });
+  const [deviceSearchQuery, setDeviceSearchQuery] = useState<string>("");
   const { notify } = useToast();
   const [users, setUsers] = useState<User[]>([]);
   const [devices, setDevices] = useState<Device[]>([]);
@@ -290,8 +294,8 @@ const Devices: React.FC = () => {
       notify("Select User Name before click save button.", "info");
       return;
     }
-    if (!newRule.deviceName) {
-      notify("Select Device before click save button.", "info");
+    if (newRule.selectedDevices.length === 0) {
+      notify("Select at least one Device before click save button.", "info");
       return;
     }
     if (!newRule.status) {
@@ -305,7 +309,7 @@ const Devices: React.FC = () => {
     }
     Swal.fire({
       title: "",
-      text: "Are you sure, you want to Create New Rule?",
+      text: `Are you sure, you want to assign ${newRule.selectedDevices.length} device(s) to this user?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
@@ -317,9 +321,106 @@ const Devices: React.FC = () => {
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        CreateRule();
+        CreateRulesForSelectedDevices();
       }
     });
+  };
+
+  // Toggle device selection for multi-select panel
+  const toggleDeviceSelection = (device: Device) => {
+    const isSelected = newRule.deviceIds.includes(device._id);
+    if (isSelected) {
+      setNewRule({
+        ...newRule,
+        deviceIds: newRule.deviceIds.filter((id) => id !== device._id),
+        selectedDevices: newRule.selectedDevices.filter((d) => d._id !== device._id),
+      });
+    } else {
+      setNewRule({
+        ...newRule,
+        deviceIds: [...newRule.deviceIds, device._id],
+        selectedDevices: [...newRule.selectedDevices, device],
+      });
+    }
+  };
+
+  const filteredDevices = devices.filter((device) =>
+    device.title.toLowerCase().includes(deviceSearchQuery.toLowerCase())
+  );
+
+  // Create rules for selected devices (bulk)
+  const CreateRulesForSelectedDevices = async () => {
+    try {
+      const ImageUrl = await ImageUpload();
+      const now = new Date();
+      const date = now.toISOString().split("T")[0];
+      const time = now.toTimeString().split(" ")[0];
+
+      const rulesData = newRule.deviceIds.map((deviceId) => {
+        const device = devices.find((d) => d._id === deviceId);
+        return {
+          deviceId: deviceId,
+          deviceName: device ? device.title : "",
+          imageUrl: ImageUrl
+            ? `${baseUrl.replace("/api", "")}/uploads/${ImageUrl}`
+            : null,
+          userId: newRule.userId,
+          userName: newRule.userName,
+          emailStatus: newRule.status,
+          companyId: UserType === "SuperAdmin" ? newRule.companyId : CompanyId,
+          dateCreated: date,
+          timeCreated: time,
+          dateUpdated: date,
+          timeUpdated: time,
+        };
+      });
+
+      const createRulePromises = rulesData.map((ruleData) =>
+        axios.post(`${baseUrl}/rules/create`, ruleData, {
+          headers: {
+            token: `Bearer ${Token}`,
+          },
+        })
+      );
+
+      const results = await Promise.all(createRulePromises);
+
+      if (results.every((response) => response.data.status)) {
+        Swal.fire({
+          title: "",
+          text: "Selected device rules created successfully!",
+          icon: "success",
+          showCancelButton: false,
+          confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
+          background: colors.primary[400],
+          iconColor: "#06D001",
+          confirmButtonText: "Ok",
+          color: colors.grey[100],
+          allowOutsideClick: false,
+        });
+      }
+      // refresh
+      FetchData();
+      // reset form
+      setIsFormOpen(false);
+      setNewRule({
+        deviceName: "",
+        image: null,
+        userId: "",
+        deviceId: "",
+        userName: "",
+        status: "",
+        ruleType: "",
+        companyId: "",
+        deviceIds: [],
+        selectedDevices: [],
+      });
+      setDeviceSearchQuery("");
+    } catch (error: any) {
+      console.log(error);
+      FetchData();
+      notify(error.response?.data?.error?.message || error.message || "An error occurred", "error");
+    }
   };
 
   const handelAddAllDevicesButton = () => {
@@ -425,6 +526,24 @@ const Devices: React.FC = () => {
     setIsImageModalOpen(false);
     setSelectedImageUrl("");
     setSelectedImageAlt("");
+  };
+
+  // Cancel form and reset selections
+  const handleCancelForm = () => {
+    setIsFormOpen(false);
+    setNewRule({
+      deviceName: "",
+      image: null,
+      userId: "",
+      deviceId: "",
+      userName: "",
+      status: "",
+      ruleType: "",
+      companyId: "",
+      deviceIds: [],
+      selectedDevices: [],
+    });
+    setDeviceSearchQuery("");
   };
 
   // Define columns for Rules page
@@ -623,27 +742,69 @@ const Devices: React.FC = () => {
                   Device Name{" "}
                   <strong className="text-red-500 text-[12px]">*</strong>
                 </label>
-                <select
-                  name="deviceName"
-                  value={newRule.deviceId}
-                  onChange={(e) =>
-                    setNewRule({
-                      ...newRule,
-                      deviceId: e.target.value,
-                      deviceName: e.target.selectedOptions[0].text,
-                    })
-                  }
-                  className="w-full p-2 mt-2 border text-[12px] rounded-md"
-                >
-                  {" "}
-                  <option>None</option>
-                  {devices.length > 0 &&
-                    devices.map((device) => (
-                      <option key={device._id} value={device._id}>
-                        {device.title}
-                      </option>
-                    ))}
-                </select>
+                {/* Search bar for devices */}
+                <input
+                  type="text"
+                  title="Search devices"
+                  placeholder="Search devices..."
+                  value={deviceSearchQuery}
+                  onChange={(e) => setDeviceSearchQuery(e.target.value)}
+                  className="w-full p-2 mt-2 border text-[12px] rounded-md focus:outline-none focus:border-blue-400"
+                />
+
+                {/* Devices list panel (scrollable) */}
+                <div className="w-full p-3 mt-2 border rounded-md bg-gray-50 max-h-[250px] overflow-y-auto">
+                  {filteredDevices.length > 0 ? (
+                    <div className="space-y-2">
+                      {filteredDevices.map((device) => (
+                        <div
+                          key={device._id}
+                          className="flex items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer transition-colors"
+                          onClick={() => toggleDeviceSelection(device)}
+                        >
+                          <input
+                            type="checkbox"
+                            title={`Select ${device.title}`}
+                            checked={newRule.deviceIds.includes(device._id)}
+                            onChange={() => toggleDeviceSelection(device)}
+                            className="w-4 h-4 cursor-pointer"
+                          />
+                          <label className="ml-3 text-sm font-medium text-gray-800 cursor-pointer flex-1">
+                            {device.title}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500 text-center py-4">No devices found</p>
+                  )}
+                </div>
+
+                {/* Selected Devices */}
+                {newRule.selectedDevices.length > 0 && (
+                  <div className="mt-3 p-2 bg-blue-50 rounded-md border border-blue-200">
+                    <p className="text-xs font-semibold text-blue-800 mb-2">
+                      Selected Devices ({newRule.selectedDevices.length}):
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {newRule.selectedDevices.map((device) => (
+                        <span
+                          key={device._id}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-blue-200 text-blue-800 text-xs rounded-full"
+                        >
+                          {device.title}
+                          <button
+                            type="button"
+                            onClick={() => toggleDeviceSelection(device)}
+                            className="ml-1 text-blue-600 hover:text-blue-800 font-bold"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               {/* Image Upload */}
               <div>
@@ -716,7 +877,7 @@ const Devices: React.FC = () => {
             <div className="flex justify-end mt-5 space-x-4">
               <button
                 className="px-4 py-3 text-[12px] w-full bg-gray-400 rounded-lg hover:bg-gray-300 transition-colors duration-300"
-                onClick={() => setIsFormOpen(false)}
+                onClick={handleCancelForm}
               >
                 Cancel
               </button>
