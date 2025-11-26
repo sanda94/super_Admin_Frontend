@@ -323,11 +323,18 @@ const OrderPopup: React.FC<OrderProps> = ({
       }
 
       // Success alert - Updated message
+      const statusLabel = 
+        newStatus === "order_confirm" ? "Confirmed" :
+        newStatus === "order_in_progress" ? "In Progress" :
+        newStatus === "order_delivered" ? "Delivered" :
+        newStatus === "order_received" ? "Received" :
+        newStatus === "order_cancel" ? "Cancelled" :
+        newStatus === "order_processing" ? "Processing" :
+        newStatus;
+
       Swal.fire({
         title: "Success!",
-        text: `Order ${
-          newStatus === "order_confirm" ? "confirmed" : newStatus
-        } successfully!`,
+        text: `Order updated to "${statusLabel}" successfully!`,
         icon: "success",
         showCancelButton: false,
         confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
@@ -709,7 +716,7 @@ const OrderPopup: React.FC<OrderProps> = ({
           <div className="mt-6">
             <div className="mb-4 p-4 bg-purple-50 border-l-4 border-purple-500 rounded">
               <h3 className="text-sm font-semibold text-purple-800 mb-2">
-                🟣 Stage 4: Order In Progress
+                🟣 Stage 4: In Progress
               </h3>
               <p className="text-xs text-purple-700">
                 The order has been Progress and is ready for delivery.
