@@ -151,7 +151,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </>
             )}
           </div>
-          <p className="text-green-500 text-[15px]">{inventory} PO Balance</p>
+          <p className="text-green-500 text-[15px]">PO Balance {inventory} </p>
         </div>
       </div>
       <div className="absolute bottom-0 w-full flex items-center justify-end gap-3 px-4 py-4">
