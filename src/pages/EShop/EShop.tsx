@@ -140,6 +140,7 @@ const EShop: React.FC = () => {
   const query = useQuery();
   const userId = query.get("userId");
   const companyId = query.get("companyId");
+  const editProductId = query.get("editProductId");
 
   let savedUserData;
 
@@ -301,6 +302,16 @@ const EShop: React.FC = () => {
   useEffect(() => {
     setCartCount(cartData?.length || 0);
   }, [cartData]);
+
+  // Auto-open edit form when editProductId is provided in URL
+  useEffect(() => {
+    if (editProductId && products.length > 0) {
+      const productToEdit = products.find(product => product._id === editProductId);
+      if (productToEdit) {
+        HandleProductCardEditButton(productToEdit);
+      }
+    }
+  }, [editProductId, products]);
 
   useEffect(() => {
     let filtered = products;

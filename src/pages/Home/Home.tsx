@@ -344,9 +344,9 @@ const Home: React.FC = () => {
                         onClick={() =>
                           SessionType === "Secondary"
                             ? navigate(
-                                `/e-shop?userId=${UserId}&companyId=${CompanyId}`
+                                `/e-shop?userId=${UserId}&companyId=${CompanyId}&editProductId=${product._id}`
                               )
-                            : navigate("/e-shop")
+                            : navigate(`/e-shop?editProductId=${product._id}`)
                         }
                       >
                         <div
@@ -426,9 +426,9 @@ const Home: React.FC = () => {
                         onClick={() =>
                           SessionType === "Secondary"
                             ? navigate(
-                                `/e-shop?userId=${UserId}&companyId=${CompanyId}`
+                                `/e-shop?userId=${UserId}&companyId=${CompanyId}&editProductId=${product._id}`
                               )
-                            : navigate("/e-shop")
+                            : navigate(`/e-shop?editProductId=${product._id}`)
                         }
                       >
                         <div
