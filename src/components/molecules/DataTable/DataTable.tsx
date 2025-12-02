@@ -27,6 +27,7 @@ type Props = {
   slug: string;
   statusChange: (id: string, newStatus: string) => void;
   fetchData: () => void;
+  actionColumnHeaderName?: string;
 };
 
 // ---------- Rule Data Interface ----------
@@ -255,7 +256,7 @@ const DataTable: React.FC<Props> = (props: Props) => {
 
   const actionColumn: GridColDef = {
     field: "action",
-    headerName: "Information",
+    headerName: props.actionColumnHeaderName || "Information",
     minWidth: 115,
     maxWidth: 120,
     flex: 1,

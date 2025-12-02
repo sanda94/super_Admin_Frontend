@@ -960,6 +960,7 @@ const Orders: React.FC = () => {
                 rows={getFilteredOrders()}
                 statusChange={HandleState}
                 fetchData={GetAllOrdersWithInventory}
+                actionColumnHeaderName="Order Processing"
               />
             </div>
           ) : (
