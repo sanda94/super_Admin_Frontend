@@ -608,30 +608,32 @@ const OrderPopup: React.FC<OrderProps> = ({
                 </p>
               )}
             </div>
-            <div className="mt-4 flex items-center justify-between">
-              <div>
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="w-full sm:w-auto">
                 <button
-                  className="px-3 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 text-[12px]"
+                  className="w-full sm:w-auto px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600 text-[12px] min-w-[120px]"
                   onClick={handleReject}
                 >
                   ❌ Cancel Order
                 </button>
               </div>
-              <div className="flex-1 mx-4">
-                <button
-                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1"
-                  onClick={saveChanges}
-                >
-                  💾 Save Message
-                </button>
-              </div>
-              <div className="min-w-[140px]">
-                <button
-                  className="w-full px-4 py-3 text-white bg-green-500 rounded-md hover:bg-green-600 text-[12px] flex items-center justify-center gap-1"
-                  onClick={handleApprove}
-                >
-                  ✅ Accept
-                </button>
+              <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <button
+                    className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1 min-w-[160px]"
+                    onClick={saveChanges}
+                  >
+                    💾 Save Message
+                  </button>
+                </div>
+                <div className="flex-1">
+                  <button
+                    className="w-full px-4 py-3 text-white bg-green-500 rounded-md hover:bg-green-600 text-[12px] flex items-center justify-center gap-1 min-w-[180px]"
+                    onClick={handleApprove}
+                  >
+                    ✅ Accept
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -652,23 +654,25 @@ const OrderPopup: React.FC<OrderProps> = ({
                 </p>
               )}
             </div>
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
               <div />
-              <div className="flex-1 mx-4">
-                <button
-                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1"
-                  onClick={saveChanges}
-                >
-                  💾 Save Changes
-                </button>
-              </div>
-              <div className="min-w-[140px]">
-                <button
-                  className="w-full px-4 py-3 text-white bg-blue-500 rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-2"
-                  onClick={handleConfirm}
-                >
-                  ✅ Confirm
-                </button>
+              <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <button
+                    className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1 min-w-[160px]"
+                    onClick={saveChanges}
+                  >
+                    💾 Save Changes
+                  </button>
+                </div>
+                <div className="flex-1">
+                  <button
+                    className="w-full px-4 py-3 text-white bg-blue-500 rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-2 min-w-[160px]"
+                    onClick={handleConfirm}
+                  >
+                    ✅ Confirm
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -689,23 +693,25 @@ const OrderPopup: React.FC<OrderProps> = ({
                 </p>
               )}
             </div>
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
               <div />
-              <div className="flex-1 mx-4">
-                <button
-                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1"
-                  onClick={saveChanges}
-                >
-                  💾 Save Changes
-                </button>
-              </div>
-              <div className="min-w-[140px]">
-                <button
-                  className="w-full px-4 py-3 text-white bg-purple-500 rounded-md hover:bg-purple-600 text-[12px] flex items-center justify-center gap-2"
-                  onClick={handleMarkAsFinished}
-                >
-                  ✅ Order In Progress
-                </button>
+              <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <button
+                    className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1 min-w-[160px]"
+                    onClick={saveChanges}
+                  >
+                    💾 Save Changes
+                  </button>
+                </div>
+                <div className="flex-1">
+                  <button
+                    className="w-full px-4 py-3 text-white bg-purple-500 rounded-md hover:bg-purple-600 text-[12px] flex items-center justify-center gap-2 min-w-[200px]"
+                    onClick={handleMarkAsFinished}
+                  >
+                    ✅ Order In Progress
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -727,23 +733,25 @@ const OrderPopup: React.FC<OrderProps> = ({
                 </p>
               )}
             </div>
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
               <div />
-              <div className="flex-1 mx-4">
-                <button
-                  className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1"
-                  onClick={saveChanges}
-                >
-                  💾 Save Changes
-                </button>
-              </div>
-              <div className="min-w-[140px]">
-                <button
-                  className="w-full px-4 py-3 text-white bg-green-600 rounded-md hover:bg-green-700 text-[12px] flex items-center justify-center gap-2"
-                  onClick={handleMarkAsDelivered}
-                >
-                  ✅ Delivered
-                </button>
+              <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <button
+                    className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1 min-w-[160px]"
+                    onClick={saveChanges}
+                  >
+                    💾 Save Changes
+                  </button>
+                </div>
+                <div className="flex-1">
+                  <button
+                    className="w-full px-4 py-3 text-white bg-green-600 rounded-md hover:bg-green-700 text-[12px] flex items-center justify-center gap-2 min-w-[180px]"
+                    onClick={handleMarkAsDelivered}
+                  >
+                    ✅ Delivered
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -801,7 +809,7 @@ const OrderPopup: React.FC<OrderProps> = ({
               )}
             </div>
             <div className="mt-4 flex items-center justify-end">
-              <div className="w-full max-w-[420px]">
+              <div className="w-full max-w-[300px]">
                 <button
                   className="w-full px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] flex items-center justify-center gap-1"
                   onClick={saveChanges}
