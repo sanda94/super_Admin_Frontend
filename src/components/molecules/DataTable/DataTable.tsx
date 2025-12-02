@@ -302,22 +302,31 @@ const DataTable: React.FC<Props> = (props: Props) => {
               UserType === "Moderator" ||
               (UserType === "SuperAdmin" && props.slug == "companies")) &&
             props.slug !== "activity-logs" ? (
-            <div className="edit" onClick={() => openPopup(params.row)}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="icon w-[20px] h-[20px]"
+            props.slug === "orders" ? (
+              <button
+                className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-[12px] font-medium"
+                onClick={() => openPopup(params.row)}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                />
-              </svg>
-            </div>
+                Open
+              </button>
+            ) : (
+              <div className="edit" onClick={() => openPopup(params.row)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="icon w-[20px] h-[20px]"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                  />
+                </svg>
+              </div>
+            )
           ) : null}
           {UserType === "Admin" || UserType === "SuperAdmin" ? (
             <div

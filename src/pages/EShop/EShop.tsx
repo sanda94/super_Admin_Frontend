@@ -1011,93 +1011,66 @@ const EShop: React.FC = () => {
       return;
     }
 
-    Swal.fire({
-      title: "",
-      text: "Are you sure, you want to add this product to cart?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
-      cancelButtonColor: theme === "dark" ? "#B8001F" : "#C7253E",
-      background: colors.primary[400],
-      iconColor: colors.blueAccent[400],
-      confirmButtonText: "Ok",
-      color: colors.grey[100],
-      allowOutsideClick: false,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const newCartItem: CartType = {
-          _id: orderData._id,
-          productName: orderData.productName,
-          skuNumber: orderData.skuNumber,
-          orderCount: orderCount,
-          inventory: orderData.inventory,
-          device: {
-            deviceId: orderData.device.deviceId,
-            deviceName: orderData.device.deviceName,
-          },
-          unitPrice: orderData.salePrice,
-          price: String(Number(orderCount) * Number(orderData.salePrice)),
-          productImageUrl: orderData.imageUrl[0] || "",
-          approvalThreshold: orderData.approvalThreshold || "0",
-          deliveryDate: orderData.deliveryDate,
-          remark: orderData.remark,
-        };
+    const newCartItem: CartType = {
+      _id: orderData._id,
+      productName: orderData.productName,
+      skuNumber: orderData.skuNumber,
+      orderCount: orderCount,
+      inventory: orderData.inventory,
+      device: {
+        deviceId: orderData.device.deviceId,
+        deviceName: orderData.device.deviceName,
+      },
+      unitPrice: orderData.salePrice,
+      price: String(Number(orderCount) * Number(orderData.salePrice)),
+      productImageUrl: orderData.imageUrl[0] || "",
+      approvalThreshold: orderData.approvalThreshold || "0",
+      deliveryDate: orderData.deliveryDate,
+      remark: orderData.remark,
+    };
 
-        let updatedCart: CartType[] = [];
+    let updatedCart: CartType[] = [];
 
-        const existingItemIndex = (cartData || []).findIndex(
-          (item) => item._id === newCartItem._id
-        );
+    const existingItemIndex = (cartData || []).findIndex(
+      (item) => item._id === newCartItem._id
+    );
 
-        if (existingItemIndex !== -1) {
-          updatedCart = [...(cartData || [])];
-          const prevCount = Number(updatedCart[existingItemIndex].orderCount);
-          const newCount = prevCount + Number(orderCount);
-          updatedCart[existingItemIndex].orderCount = newCount.toString();
-          updatedCart[existingItemIndex].price = String(
-            newCount * Number(orderData.salePrice)
-          );
-          updatedCart[existingItemIndex].deliveryDate = orderData.deliveryDate;
-        } else {
-          updatedCart = [...(cartData || []), newCartItem];
-        }
+    if (existingItemIndex !== -1) {
+      updatedCart = [...(cartData || [])];
+      const prevCount = Number(updatedCart[existingItemIndex].orderCount);
+      const newCount = prevCount + Number(orderCount);
+      updatedCart[existingItemIndex].orderCount = newCount.toString();
+      updatedCart[existingItemIndex].price = String(
+        newCount * Number(orderData.salePrice)
+      );
+      updatedCart[existingItemIndex].deliveryDate = orderData.deliveryDate;
+    } else {
+      updatedCart = [...(cartData || []), newCartItem];
+    }
 
-        const total = updatedCart.reduce(
-          (acc, item) => acc + Number(item.price),
-          0
-        );
-        const totalStr = total.toFixed(2);
+    const total = updatedCart.reduce(
+      (acc, item) => acc + Number(item.price),
+      0
+    );
+    const totalStr = total.toFixed(2);
 
-        setTotalPrice(totalStr);
-        setCartData(updatedCart);
-        console.log("Updated cart: ", updatedCart);
-        localStorage.setItem("cartData", JSON.stringify(updatedCart));
-        localStorage.setItem("totalPrice", totalStr);
-        setOrderCount("");
-        HandleCloseButton();
+    setTotalPrice(totalStr);
+    setCartData(updatedCart);
+    console.log("Updated cart: ", updatedCart);
+    localStorage.setItem("cartData", JSON.stringify(updatedCart));
+    localStorage.setItem("totalPrice", totalStr);
+    setOrderCount("");
+    HandleCloseButton();
 
-        Swal.fire({
-          title: "",
-          text: "Product added to cart successfully!",
-          icon: "success",
-          showCancelButton: false,
-          confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
-          background: colors.primary[400],
-          iconColor: "#06D001",
-          confirmButtonText: "Ok",
-          color: colors.grey[100],
-          allowOutsideClick: false,
-        });
-      }
-    });
+    notify("Product added to cart successfully!", "success");
   };
 
   // Handle Request Order button
   const RequestOrderButton = () => {
     Swal.fire({
       title: "",
-      text: "Are you sure, you want to order products?",
-      icon: "question",
+      text: "Thank You for your valued order!",
+      icon: "success",
       showCancelButton: true,
       confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
       cancelButtonColor: theme === "dark" ? "#B8001F" : "#C7253E",
@@ -1919,7 +1892,7 @@ const EShop: React.FC = () => {
           <div className="w-full relative p-6 bg-white rounded-lg h-auto max-h-[90vh] overflow-y-auto shadow-lg lg:w-[750px]">
             <h2 className="mb-4 text-lg font-bold text-center text-black">
               {showOrderForm && !showViewForm
-                ? "Add New Order"
+                ? "New Order"
                 : "View Product"}
             </h2>
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
