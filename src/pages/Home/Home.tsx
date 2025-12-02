@@ -375,7 +375,7 @@ const Home: React.FC = () => {
                             className="text-xs truncate"
                             style={{ color: "#222" }}
                           >
-                            SKU: {product.skuNumber}
+                            Lead Time: {product.skuNumber}
                           </p>
                           <p className="text-xs" style={{ color: "#333" }}>
                             {product.category}
@@ -457,7 +457,7 @@ const Home: React.FC = () => {
                             className="text-xs truncate"
                             style={{ color: "#222" }}
                           >
-                            SKU: {product.skuNumber}
+                            Lead Time: {product.skuNumber}
                           </p>
                           <p className="text-xs" style={{ color: "#333" }}>
                             {product.category}

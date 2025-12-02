@@ -131,8 +131,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </div>
       <div className="px-4 py-2 mt-4">
-        <p className="text-gray-400 text-[13px] overflow-hidden line-clamp-1">
-          SKU: {skuNumber}
+        <p className="text-[13px] overflow-hidden line-clamp-1 font-bold">
+          <span className="font-bold text-black">Lead Time:</span> <span className="font-bold text-black">{skuNumber}</span>
         </p>
         <p className="text-[18px] mt-2 font-bold overflow-hidden line-clamp-1">
           {productName}

@@ -580,7 +580,7 @@ const Devices: React.FC = () => {
     },
     {
       field: "assignProduct",
-      headerName: "Product",
+      headerName: "Customer Part Number",
       minWidth: 200,
       renderCell: (params: any) => (
         <span className="truncate max-w-[180px] block text-gray-700">

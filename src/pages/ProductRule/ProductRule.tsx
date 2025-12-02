@@ -344,7 +344,7 @@ const ProductRule: React.FC = () => {
   const columns: GridColDef[] = [
     {
       field: "productProfile",
-      headerName: "Product",
+      headerName: "Customer Part Number",
       minWidth: 300,
       renderCell: (params: any) => {
         return (

@@ -1356,7 +1356,7 @@ const EShop: React.FC = () => {
             </div>
           )}
 
-          {(UserType === "Admin" || UserType === "Moderator") ? (
+          {UserType === "Admin" || UserType === "Moderator" ? (
             <div className="flex flex-col md:flex-row items-center justify-center gap-5">
               <button
                 onClick={HandleAddNewProductButton}
@@ -1365,25 +1365,24 @@ const EShop: React.FC = () => {
                 <FaBoxOpen size={20} />
                 Add New Products
               </button>
-              {UserType === "Admin" &&
-                products.length !== 0 && (
-                  <>
-                    <button
-                      onClick={downloadExcelFile}
-                      className="px-4 py-3 text-[12px] w-full md:w-auto bg-green-600 hover:bg-green-700 flex items-center justify-center gap-3 rounded-md text-white duration-300 transition-colors"
-                    >
-                      <FaFileExcel size={20} />
-                      Download Excel
-                    </button>
-                    <button
-                      onClick={downloadPDFFile}
-                      className="px-4 py-3 text-[12px] w-full md:w-auto bg-red-600 hover:bg-red-700 flex items-center justify-center gap-3 rounded-md text-white duration-300 transition-colors"
-                    >
-                      <FaFilePdf size={20} />
-                      Download PDF
-                    </button>
-                  </>
-                )}
+              {UserType === "Admin" && products.length !== 0 && (
+                <>
+                  <button
+                    onClick={downloadExcelFile}
+                    className="px-4 py-3 text-[12px] w-full md:w-auto bg-green-600 hover:bg-green-700 flex items-center justify-center gap-3 rounded-md text-white duration-300 transition-colors"
+                  >
+                    <FaFileExcel size={20} />
+                    Download Excel
+                  </button>
+                  <button
+                    onClick={downloadPDFFile}
+                    className="px-4 py-3 text-[12px] w-full md:w-auto bg-red-600 hover:bg-red-700 flex items-center justify-center gap-3 rounded-md text-white duration-300 transition-colors"
+                  >
+                    <FaFilePdf size={20} />
+                    Download PDF
+                  </button>
+                </>
+              )}
             </div>
           ) : null}
           {UserType === "Customer" ? (
@@ -1484,7 +1483,7 @@ const EShop: React.FC = () => {
           <div className="w-full mt-4 md:w-6/12 lg:w-5/12">
             <input
               type="text"
-              placeholder="Search by product name or SKU number"
+              placeholder="Search by product name or Lead Time"
               className="w-full px-4 py-2 text-[12px] border border-gray-300 rounded-md"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -1535,7 +1534,7 @@ const EShop: React.FC = () => {
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <div>
                 <label className="w-full font-semibold text-[13px]">
-                  Product Name{" "}
+                  Customer Part Number{" "}
                   <strong className="text-red-500 text-[12px]">*</strong>
                 </label>
                 <input
@@ -1548,13 +1547,13 @@ const EShop: React.FC = () => {
                       productName: e.target.value,
                     })
                   }
-                  placeholder="Product Name"
+                  placeholder="Customer Part Number"
                   className="w-full p-2 mt-2 text-[12px] border rounded-md"
                 />
               </div>
               <div>
                 <label className="w-full font-semibold text-[13px]">
-                  SKU Number{" "}
+                  Lead Time{" "}
                   <strong className="text-red-500 text-[12px]">*</strong>
                 </label>
                 <input
@@ -1567,7 +1566,7 @@ const EShop: React.FC = () => {
                       skuNumber: e.target.value,
                     })
                   }
-                  placeholder="SKU Number"
+                  placeholder="Lead Time"
                   className="w-full p-2 mt-2 text-[12px] border rounded-md"
                 />
               </div>
@@ -1645,7 +1644,9 @@ const EShop: React.FC = () => {
                 </div>
               </div>
 
-              {(UserType === "SuperAdmin" || UserType === "Admin" || UserType === "Moderator") && (
+              {(UserType === "SuperAdmin" ||
+                UserType === "Admin" ||
+                UserType === "Moderator") && (
                 <div>
                   <label className="w-full font-semibold text-[13px]">
                     Approval Threshold{" "}
@@ -1667,7 +1668,9 @@ const EShop: React.FC = () => {
                   />
                 </div>
               )}
-              {(UserType === "SuperAdmin" || UserType === "Admin" || UserType === "Moderator") && (
+              {(UserType === "SuperAdmin" ||
+                UserType === "Admin" ||
+                UserType === "Moderator") && (
                 <div>
                   <label className="w-full font-semibold text-[13px]">
                     PO Number{" "}
@@ -1688,7 +1691,9 @@ const EShop: React.FC = () => {
                   />
                 </div>
               )}
-              {(UserType === "SuperAdmin" || UserType === "Admin" || UserType === "Moderator") && (
+              {(UserType === "SuperAdmin" ||
+                UserType === "Admin" ||
+                UserType === "Moderator") && (
                 <div>
                   <label className="w-full font-semibold text-[13px]">
                     Minimum Products Count{" "}
@@ -1812,7 +1817,9 @@ const EShop: React.FC = () => {
                 </select>
               </div>
 
-              {(UserType === "Admin" || UserType === "SuperAdmin" || UserType === "Moderator") && (
+              {(UserType === "Admin" ||
+                UserType === "SuperAdmin" ||
+                UserType === "Moderator") && (
                 <div>
                   <label className="w-full font-semibold text-[13px]">
                     Tags
@@ -1991,10 +1998,13 @@ const EShop: React.FC = () => {
                     x {orderCount} To be delivered
                   </span>
                 </div>
-                <p className="text-[14px] font-bold italic text-gray-800">
-                  SKU Number: {orderData.skuNumber}
+                <p className="text-[14px] font-bold italic text-black">
+                  <span className="font-bold text-black">Lead Time:</span>{" "}
+                  <span className="font-bold text-black ">
+                    {orderData.skuNumber}
+                  </span>
                 </p>
-                <p className="text-[14px]  text-gray-800">
+                <p className="text-[14px] font-bold italic text-gray-800">
                   PO Number: {orderData.poNumber}
                 </p>
                 {Number(orderData.minCount) > Number(orderData.inventory) &&
@@ -2004,9 +2014,9 @@ const EShop: React.FC = () => {
                     </p>
                   )}
 
-                <p className="text-[14px]  text-gray-900">
-                  Approval Threshold: {orderData.approvalThreshold}
-                </p>
+                {/*<p className="text-[14px]  text-gray-900">
+                  Approval Threshold : {orderData.approvalThreshold}
+                </p>*/}
 
                 {UserType === "SuperAdmin" && (
                   <div className="flex items-center gap-1 text-gray-600 text-[13px] sm:text-[14px] font-medium max-w-[200px] sm:max-w-[250px] md:max-w-[300px] truncate">
@@ -2028,8 +2038,8 @@ const EShop: React.FC = () => {
                   (UserType === "SuperAdmin" && (
                     <p className="text-[15px]">{orderData.unitWeight}</p>
                   ))}
-                <p className="text-green-500">
-                  {orderData.inventory} PO Balance
+                <p className="text-[14px] font-bold italic text-green-500">
+                  PO Balance : {orderData.inventory}
                 </p>
                 <p className="text-[15px] font-semibold">
                   {orderData.category}
@@ -2218,20 +2228,20 @@ const EShop: React.FC = () => {
                               }}
                             />
 
-                            {/* Product Name + Quantity */}
-                            <div className="flex items-center justify-center flex-1 text-center gap-2">
-                              <span className="text-[15px] font-semibold max-w-full sm:max-w-[220px] line-clamp-1">
-                                {data.productName}
-                              </span>
-                              <span className="text-gray-500 text-[13px]">
-                                x {data.orderCount} Order quantity
-                              </span>
-                            </div>
-
-                            {/* Delivery Date */}
-                            <div className="text-center mt-1 text-[13px] text-gray-600">
-                              Delivery Date:{" "}
-                              {data.deliveryDate || "Not selected"}
+                            {/* Product Name + Quantity + Delivery Date */}
+                            <div className="flex flex-col flex-1 text-center gap-1">
+                              <div className="flex items-center justify-center gap-2">
+                                <span className="text-[15px] font-semibold max-w-full sm:max-w-[220px] line-clamp-1">
+                                  {data.productName}
+                                </span>
+                                <span className="text-[14px] font-bold italic text-gray-800">
+                                  x {data.orderCount} Order quantity
+                                </span>
+                              </div>
+                              <div className="text-[14px] font-bold italic text-gray-800">
+                                Delivery Date:
+                                {data.deliveryDate || "Not selected"}
+                              </div>
                             </div>
                           </div>
 

@@ -260,7 +260,7 @@ const ProductRulePopUp: React.FC<ProductRuleProps> = ({
           {!location.pathname.includes("/user") && UserType !== "Customer" && (
             <div>
               <label className="w-full font-semibold text-[13px]">
-                Product Name
+                Customer Part Number
               </label>
               <select
                 name="status"

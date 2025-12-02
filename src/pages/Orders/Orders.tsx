@@ -260,7 +260,7 @@ const Orders: React.FC = () => {
     // Always show these columns for all user types
     {
       field: "customerRequestDate",
-      headerName: "Request Date",
+      headerName: "Order Date",
       minWidth: 150,
       renderCell: (params: any) => {
         const date = params.row.dateCreated
@@ -283,7 +283,7 @@ const Orders: React.FC = () => {
           },
           {
             field: "profile",
-            headerName: "Customer Profile",
+            headerName: "User Name",
             minWidth: 300,
             renderCell: (params: any) => {
               return (
@@ -315,7 +315,7 @@ const Orders: React.FC = () => {
       : []),
     {
       field: "productName",
-      headerName: "Product",
+      headerName: "Customer Part Number",
       minWidth: 250,
       renderCell: (params: any) => (
         <span className="truncate max-w-[180px] font-bold">{params.value}</span>
@@ -357,7 +357,7 @@ const Orders: React.FC = () => {
     },
     {
       field: "skuNumber",
-      headerName: "SKU Number",
+      headerName: "Lead Time",
       minWidth: 200,
       renderCell: (params: any) => (
         <span className="truncate max-w-[180px] font-bold italic text-gray-500">
