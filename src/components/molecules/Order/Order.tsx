@@ -483,7 +483,7 @@ const OrderPopup: React.FC<OrderProps> = ({
           ✕
         </button>
         <h2 className="mb-4 text-lg font-bold text-center text-black">
-          Edit Order
+          Order Details.
         </h2>
         <div></div>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
@@ -682,11 +682,11 @@ const OrderPopup: React.FC<OrderProps> = ({
           <div className="mt-6">
             <div className="mb-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
               <h3 className="text-sm font-semibold text-blue-800 mb-2">
-                🔵 Stage 3: Confirmed
+                🔵 Stage 2: Confirmed
               </h3>
-              <p className="text-xs text-blue-700">
+              {/*<p className="text-xs text-blue-700">
                 The order has been confirmed and is now in production.
-              </p>
+              </p>*/}
               {order.message && (
                 <p className="text-xs mt-2 italic text-blue-600">
                   Message: {order.message}
@@ -722,11 +722,11 @@ const OrderPopup: React.FC<OrderProps> = ({
           <div className="mt-6">
             <div className="mb-4 p-4 bg-purple-50 border-l-4 border-purple-500 rounded">
               <h3 className="text-sm font-semibold text-purple-800 mb-2">
-                🟣 Stage 4: In Progress
+                🟣 Stage 3: In Progress
               </h3>
-              <p className="text-xs text-purple-700">
+              {/*<p className="text-xs text-purple-700">
                 The order has been Progress and is ready for delivery.
-              </p>
+              </p>*/}
               {order.message && (
                 <p className="text-xs mt-2 italic text-purple-600">
                   Message: {order.message}
