@@ -1467,7 +1467,7 @@ const EShop: React.FC = () => {
           <div className="w-full mt-4 md:w-6/12 lg:w-5/12">
             <input
               type="text"
-              placeholder="Search by product name or Lead Time"
+              placeholder="Search by product name or SKU Number"
               className="w-full px-4 py-2 text-[12px] border border-gray-300 rounded-md"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -1537,7 +1537,7 @@ const EShop: React.FC = () => {
               </div>
               <div>
                 <label className="w-full font-semibold text-[13px]">
-                  Lead Time{" "}
+                  SKU Number{" "}
                   <strong className="text-red-500 text-[12px]">*</strong>
                 </label>
                 <input
@@ -1550,7 +1550,7 @@ const EShop: React.FC = () => {
                       skuNumber: e.target.value,
                     })
                   }
-                  placeholder="Lead Time"
+                  placeholder="SKU Number"
                   className="w-full p-2 mt-2 text-[12px] border rounded-md"
                 />
               </div>
@@ -1983,7 +1983,7 @@ const EShop: React.FC = () => {
                   </span>
                 </div>
                 <p className="text-[14px] font-bold italic text-black">
-                  <span className="font-bold text-black">Lead Time:</span>{" "}
+                  <span className="font-bold text-black">SKU Number:</span>{" "}
                   <span className="font-bold text-black ">
                     {orderData.skuNumber}
                   </span>

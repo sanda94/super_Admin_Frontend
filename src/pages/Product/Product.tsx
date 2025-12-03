@@ -56,7 +56,7 @@ const Product: React.FC = () => {
         </button>
         <PageHeader
           title={product.productName}
-          subTitle={`Lead Time: ${product.skuNumber}`}
+          subTitle={`SKU Number: ${product.skuNumber}`}
         />
       </div>
       <div className="flex flex-col md:flex-row gap-8 mt-6">

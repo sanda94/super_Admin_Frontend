@@ -357,7 +357,7 @@ const Orders: React.FC = () => {
     },
     {
       field: "skuNumber",
-      headerName: "Lead Time",
+      headerName: "SKU Number",
       minWidth: 200,
       renderCell: (params: any) => (
         <span className="truncate max-w-[180px] font-bold italic text-gray-500">
