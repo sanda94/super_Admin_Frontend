@@ -304,7 +304,7 @@ const DataTable: React.FC<Props> = (props: Props) => {
             props.slug !== "activity-logs" ? (
             props.slug === "orders" ? (
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-[12px] font-semibold shadow-md transition-all duration-300 hover:shadow-lg border-2 border-blue-600"
+                className="px-3 py-2 h-[62%] w-[100px] flex items-center text-[12px] justify-center rounded-md transition-colors duration-300 text-white bg-blue-500 hover:bg-blue-400 border-2 border-blue-600"
                 onClick={() => openPopup(params.row)}
               >
                 Open
