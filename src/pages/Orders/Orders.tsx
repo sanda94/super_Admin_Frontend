@@ -375,6 +375,16 @@ const Orders: React.FC = () => {
         </span>
       ),
     },
+    {
+      field: "internalPartNumber",
+      headerName: "Internal Part Number",
+      minWidth: 200,
+      renderCell: (params: any) => (
+        <span className="truncate max-w-[180px] font-bold">
+          {params.row.price}
+        </span>
+      ),
+    },
     ...(UserType !== "Customer"
       ? [
           {

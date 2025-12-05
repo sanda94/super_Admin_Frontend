@@ -305,7 +305,7 @@ const EShop: React.FC = () => {
 
   // Auto-open edit form when editProductId is provided in URL
   useEffect(() => {
-    if (editProductId && products.length > 0) {
+    if (editProductId && products.length > 0 && !isEditing) {
       const productToEdit = products.find(product => product._id === editProductId);
       if (productToEdit) {
         HandleProductCardEditButton(productToEdit);
@@ -655,9 +655,9 @@ const EShop: React.FC = () => {
       );
 
       if (response.data.status) {
-        Swal.fire({
+        await Swal.fire({
           title: "",
-          text: "New Product Created Successfully!",
+          text: "Product Updated Successfully!",
           icon: "success",
           showCancelButton: false,
           confirmButtonColor: theme === "dark" ? "#86D293" : "#73EC8B",
@@ -669,10 +669,31 @@ const EShop: React.FC = () => {
         });
         HandleCloseButton();
         GetProducts();
+      } else {
+        // Even if update fails, remove editProductId from URL to prevent reopening
+        if (editProductId) {
+          const newSearchParams = new URLSearchParams(window.location.search);
+          newSearchParams.delete('editProductId');
+          const newSearch = newSearchParams.toString();
+          const newPath = `${window.location.pathname}${newSearch ? `?${newSearch}` : ''}`;
+          navigate(newPath);
+        }
       }
+      return response.data.status;
     } catch (error: any) {
       console.error("Failed to update product:", error);
       notify(error.response.data.error.message, "error");
+      
+      // Remove editProductId from URL to prevent reopening
+      if (editProductId) {
+        const newSearchParams = new URLSearchParams(window.location.search);
+        newSearchParams.delete('editProductId');
+        const newSearch = newSearchParams.toString();
+        const newPath = `${window.location.pathname}${newSearch ? `?${newSearch}` : ''}`;
+        navigate(newPath);
+      }
+      
+      return false;
     }
   };
 
@@ -870,8 +891,8 @@ const EShop: React.FC = () => {
   };
 
   // Handle Update button of Edit Product form
-  const HandleUpdateButton = () => {
-    Swal.fire({
+  const HandleUpdateButton = async () => {
+    const result = await Swal.fire({
       title: "",
       text: "Are you sure, you want to save changes?",
       icon: "question",
@@ -883,11 +904,11 @@ const EShop: React.FC = () => {
       confirmButtonText: "Ok",
       color: colors.grey[100],
       allowOutsideClick: false,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        UpdateProduct();
-      }
     });
+
+    if (result.isConfirmed) {
+      await UpdateProduct();
+    }
   };
 
   // Handel Edit button of Product card
@@ -1202,6 +1223,15 @@ const EShop: React.FC = () => {
       deliveryDate: "",
       remark: "",
     });
+    
+    // Remove editProductId from URL
+    if (editProductId) {
+      const newSearchParams = new URLSearchParams(window.location.search);
+      newSearchParams.delete('editProductId');
+      const newSearch = newSearchParams.toString();
+      const newPath = `${window.location.pathname}${newSearch ? `?${newSearch}` : ''}`;
+      navigate(newPath);
+    }
   };
 
   // Handle edit form close button
@@ -1720,7 +1750,7 @@ const EShop: React.FC = () => {
               <div className="flex flex-col md:flex-row gap-5 md:col-span-2 ">
                 <div className="flex-1">
                   <label className="w-full font-semibold text-[13px]">
-                    Price ($){" "}
+                    Internal Part Number{" "}
                     <strong className="text-red-500 text-[12px]">*</strong>
                   </label>
                   <input
@@ -1731,7 +1761,7 @@ const EShop: React.FC = () => {
                     onChange={(e) =>
                       setNewProduct({ ...NewProduct, price: e.target.value })
                     }
-                    placeholder="Price"
+                    placeholder="Internal Part Number"
                     className="w-full p-2 mt-2 text-[12px] border rounded-md"
                   />
                 </div>
